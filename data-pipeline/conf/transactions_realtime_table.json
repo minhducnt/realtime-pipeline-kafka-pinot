@@ -1,0 +1,44 @@
+{
+  "tableName": "transactions",
+  "tableType": "REALTIME",
+  "segmentsConfig": {
+    "schemaName": "transactions",
+    "timeColumnName": "create_dt",
+    "timeType": "SECONDS",
+    "replication": "1",
+    "retentionTimeUnit": "DAYS",
+    "retentionTimeValue": "7"
+  },
+  "tableIndexConfig": {
+    "loadMode": "MMAP",
+    "invertedIndexColumns": [],
+    "noDictionaryColumns": [],
+    "rangeIndexColumns": [],
+    "bloomFilterColumns": []
+  },
+  "ingestionConfig": {
+    "streamIngestionConfig": {
+      "streamConfigMaps": [
+        {
+          "streamType": "kafka",
+          "stream.kafka.topic.name": "transactions_rt",
+          "stream.kafka.broker.list": "93.115.172.151:9092",
+
+          "stream.kafka.consumer.type": "lowlevel",
+          "stream.kafka.consumer.prop.auto.offset.reset": "smallest",
+
+          "stream.kafka.decoder.class.name": "org.apache.pinot.plugin.stream.kafka.KafkaJSONMessageDecoder",
+
+          "realtime.segment.flush.threshold.rows": "0",
+          "realtime.segment.flush.threshold.time": "24h",
+          "realtime.segment.flush.threshold.segment.size": "200M"
+        }
+      ]
+    }
+  },
+  "tenants": {
+    "broker": "DefaultTenant",
+    "server": "DefaultTenant"
+  },
+  "metadata": {}
+}
