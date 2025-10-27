@@ -210,7 +210,7 @@ function Start-Dashboard {
     Write-Header
     Write-Host "🎯 Starting dashboard only..." -ForegroundColor Green
 
-    & ".\run_react_dashboard.bat"
+    & make dashboard
 }
 
 # Main command processing

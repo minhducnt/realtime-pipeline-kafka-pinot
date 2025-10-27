@@ -19,24 +19,24 @@ A complete real-time data pipeline and monitoring dashboard for transaction anal
 ```
 realtime-transaction-monitoring/
 ├── data-pipeline/          # Kafka + Pinot data processing
-│   ├── conf/              # Pinot configurations
-│   ├── crawl_data/        # Producers/consumers
-│   ├── data/              # Sample datasets
-│   ├── scripts/           # Utility scripts
-│   └── segments/          # Pinot data segments
-├── dashboard/             # React dashboard (Clean Architecture)
-│   ├── src/               # TypeScript/React code
-│   ├── public/            # Static assets
-│   └── package.json       # Frontend dependencies
-├── api/                   # Backend API server
-│   ├── src/               # Server code
-│   ├── package.json       # Backend dependencies
-│   └── server.js          # Express server
-├── docker/                # Docker configurations
-│   ├── docker-compose.yml # Full stack deployment
-│   └── README.md          # Docker documentation
-├── docs/                  # Documentation
-└── README.md             # This file
+│   ├── conf/               # Pinot configurations
+│   ├── crawl_data/         # Producers/consumers
+│   ├── data/               # Sample datasets
+│   ├── scripts/            # Utility scripts
+│   └── segments/           # Pinot data segments
+├── dashboard/              # React dashboard (Clean Architecture)
+│   ├── src/                # TypeScript/React code
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies
+├── api/                    # Backend API server
+│   ├── src/                # Server code
+│   ├── package.json        # Backend dependencies
+│   └── server.js           # Express server
+├── docker/                 # Docker configurations
+│   ├── docker-compose.yml  # Full stack deployment
+│   └── README.md           # Docker documentation
+├── docs/                   # Documentation
+└── README.md               # This file
 ```
 
 ## 🚀 Quick Start
@@ -45,6 +45,19 @@ realtime-transaction-monitoring/
 - Docker & Docker Compose
 - Node.js 18+ (for local development)
 - Python 3.8+ (for data pipeline scripts, optional)
+
+### Environment Setup
+Copy the example environment files:
+```bash
+# Root environment for Docker Compose
+cp env.example .env
+
+# API server environment
+cp api/env.example api/.env
+
+# Dashboard environment
+cp dashboard/transaction-dashboard/env.example dashboard/transaction-dashboard/.env.local
+```
 
 ### Option 1: One-Command Full System (Recommended)
 ```bash
@@ -102,47 +115,6 @@ make dev
 # 3. ./run_react_dashboard.sh
 ```
 
-## 🎯 Features
-
-### Real-Time Data Pipeline
-- **Apache Kafka**: Message streaming
-- **Apache Pinot**: Real-time analytics
-- **Data Producers**: Synthetic transaction generation
-- **Data Processors**: Fraud detection and enrichment
-
-### Modern Dashboard
-- **React/Next.js**: Modern frontend framework
-- **TypeScript**: Type-safe development
-- **Clean Architecture**: Maintainable code structure
-- **Real-Time Updates**: Server-Sent Events
-- **Responsive Design**: Works on all devices
-
-### Fraud Detection
-- **Real-Time Alerts**: Instant fraud notifications
-- **Risk Scoring**: Transaction risk assessment
-- **Geographic Analysis**: Fraud hotspots
-- **Payment Method Analysis**: Risk by payment type
-
-## 📊 Dashboard Features
-
-### Real-Time Monitoring
-- Live KPI metrics (transactions, fraud rates, amounts)
-- Time series charts with real-time updates
-- Geographic fraud distribution maps
-- Payment method risk analysis
-
-### Fraud Detection
-- Real-time fraud alerts with severity levels
-- Transaction feed with fraud indicators
-- Historical fraud patterns
-- Risk classification system
-
-### Modern UI/UX
-- Clean, modern interface with Shadcn/ui
-- Responsive design for all screen sizes
-- Dark/light theme support
-- Smooth animations and transitions
-
 ## 🛠️ Technology Stack
 
 ### Backend
@@ -175,27 +147,63 @@ PINOT_PORT=8099
 UPDATE_INTERVAL=2000
 ```
 
-#### Dashboard (dashboard/)
+Copy `api/env.example` to `api/.env` and adjust values as needed.
+
+#### Dashboard (dashboard/transaction-dashboard/)
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_UPDATE_INTERVAL=2000
 ```
 
+Copy `dashboard/transaction-dashboard/env.example` to `dashboard/transaction-dashboard/.env.local` and adjust values as needed.
+
 #### Data Pipeline (docker/)
 ```env
-PUBLIC_IP=your-public-ip
+PUBLIC_IP=localhost
 BOOTSTRAP_SERVERS=kafka:9092
 TOPIC_RAW=transactions_raw
 TOPIC_CLEAN=transactions_rt
+GROUP_ID=rt-processor-v1
+DEDUP_MAX_KEYS=50000
 ```
+
+Copy `env.example` to `.env` in the root directory and adjust values as needed.
 
 ## 📈 Data Flow
 
-```
-Synthetic Data → Kafka Producer → Kafka Topic → Kafka Consumer → Pinot
-       ↓              ↓              ↓              ↓              ↓
-   Data Generation  Raw Messages  Message Queue  Processing     Analytics
-   (Python/Faker)   (transactions_raw)         (Cleaning)      (Real-time)
+```mermaid
+flowchart LR
+    %% Data Generation Row
+    A[📊 Synthetic Data Generator<br/>Python + Faker] --> B[Kafka Producer<br/>rt_producer.py]
+    B --> C[(💬 Kafka Topic<br/>transactions_raw)]
+
+    %% Processing Row
+    C --> D[Kafka Consumer<br/>rt_processor.py]
+    D --> E[(💬 Kafka Topic<br/>transactions_rt)]
+    E --> F[📥 Apache Pinot<br/>Real-time Ingestion]
+
+    %% Storage & API Row
+    F --> G[(🗄️ Pinot Tables<br/>transactions)]
+    G --> H[🚀 API Server<br/>Node.js + Express]
+
+    %% Dashboard Row
+    H --> I[📱 Dashboard<br/>React + Next.js]
+
+    %% Real-time Connections
+    I -.->|Server-Sent Events| H
+    H -.->|Real-time Queries| G
+
+    %% Styling
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef kafka fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef processing fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef app fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+
+    class A source
+    class B,C,D,E kafka
+    class F,G processing
+    class H,I app
 ```
 
 ## 🧪 Development
@@ -270,15 +278,6 @@ make status
 make clean
 ```
 
-## 📚 Documentation
-
-- [Data Pipeline](./data-pipeline/README.md)
-- [API Server](./api/README.md)
-- [Dashboard](./dashboard/README.md)
-- [Docker Setup](./docker/README.md)
-- [Architecture Guide](./docs/ARCHITECTURE.md)
-- [Development Guide](./docs/DEVELOPMENT.md)
-
 ## 🚀 Deployment
 
 ### Production Deployment
@@ -297,27 +296,11 @@ docker-compose up -d --scale pinot-server=3
 docker-compose up -d --scale api=2
 ```
 
-## 🤝 Contributing
+## 📚 Documentation
 
-1. Fork the repository
-2. Create a feature branch
-3. Follow Clean Architecture principles
-4. Add tests for new features
-5. Update documentation
-6. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🙏 Acknowledgments
-
-- **Apache Kafka** for real-time messaging
-- **Apache Pinot** for real-time analytics
-- **Next.js** for the React framework
-- **Shadcn/ui** for beautiful components
-- **Docker** for containerization
-
----
-
-**Built with ❤️ using Clean Architecture and modern web technologies**
+- [Data Pipeline](./data-pipeline/README.md)
+- [API Server](./api/README.md)
+- [Dashboard](./dashboard/README.md)
+- [Docker Setup](./docker/README.md)
+- [Architecture Guide](./docs/ARCHITECTURE.md)
+- [Development Guide](./docs/DEVELOPMENT.md)

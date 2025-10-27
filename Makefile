@@ -91,8 +91,44 @@ build:
 
 # Quick dashboard start
 dashboard:
-	@echo "🎯 Starting dashboard only..."
-	./run_react_dashboard.sh || ./run_react_dashboard.bat
+	@echo "🎯 Starting dashboard..."
+	@echo "📊 Modern dashboard with Clean Architecture & TypeScript"
+	@echo ""
+	@if command -v node >/dev/null 2>&1; then \
+		echo "✅ Node.js found"; \
+	else \
+		echo "❌ Node.js is not installed. Please install Node.js first:"; \
+		echo "   - Download from: https://nodejs.org/"; \
+		echo "   - Or use: choco install nodejs (Windows with Chocolatey)"; \
+		echo "   - Or use: apt install nodejs npm (Linux)"; \
+		echo "   - Or use: brew install node (macOS)"; \
+		exit 1; \
+	fi
+	@if command -v npm >/dev/null 2>&1; then \
+		echo "✅ npm found"; \
+	else \
+		echo "❌ npm is not installed. Please install npm first."; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "📦 Checking dependencies..."
+	cd dashboard/transaction-dashboard && \
+	if [ ! -d "node_modules" ]; then \
+		echo "📦 Installing dependencies..."; \
+		npm install; \
+		if [ $$? -ne 0 ]; then \
+			echo "❌ Failed to install dependencies"; \
+			exit 1; \
+		fi; \
+	fi
+	@echo ""
+	@echo "🔗 Make sure your Pinot cluster is running on localhost:8099"
+	@echo "🌐 Dashboard will be available at: http://localhost:3000"
+	@echo "⚡ Real-time updates via Server-Sent Events"
+	@echo ""
+	@echo "Press Ctrl+C to stop the dashboard"
+	@echo ""
+	cd dashboard/transaction-dashboard && npm run dev
 
 # Database operations
 db-init:

@@ -93,9 +93,13 @@ npm start
 Create a `.env.local` file:
 
 ```env
-NEXT_PUBLIC_PINOT_HOST=localhost
-NEXT_PUBLIC_PINOT_PORT=3000
+NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_UPDATE_INTERVAL=2000
+```
+
+Or copy from the example file:
+```bash
+cp env.example .env.local
 ```
 
 ### Backend Server

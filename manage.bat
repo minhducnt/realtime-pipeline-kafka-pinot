@@ -178,7 +178,7 @@ goto end
 
 :dashboard
 echo 🎯 Starting dashboard only...
-call run_react_dashboard.bat
+make dashboard
 goto end
 
 :end

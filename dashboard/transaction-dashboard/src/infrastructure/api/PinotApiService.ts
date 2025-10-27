@@ -13,8 +13,8 @@ import {
 export class PinotApiService implements TransactionService {
   private baseUrl: string
 
-  constructor(baseUrl: string = 'http://localhost:3000') {
-    this.baseUrl = baseUrl
+  constructor(baseUrl?: string) {
+    this.baseUrl = baseUrl || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
   }
 
   async queryPinot(sql: string): Promise<any> {
