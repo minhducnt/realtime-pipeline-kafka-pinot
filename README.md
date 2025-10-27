@@ -304,3 +304,5 @@ docker-compose up -d --scale api=2
 - [Docker Setup](./docker/README.md)
 - [Architecture Guide](./docs/ARCHITECTURE.md)
 - [Development Guide](./docs/DEVELOPMENT.md)
+
+---

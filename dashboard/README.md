@@ -1,149 +1,125 @@
-# Transaction Monitoring Dashboard
+# Real-Time Transaction Dashboard
 
-Modern React/Next.js dashboard for real-time transaction monitoring with Clean Architecture.
+A modern, real-time transaction monitoring dashboard built with **Next.js 14**, **React 18**, **TypeScript**, **Tailwind CSS**, and **Radix UI**. Implements **Clean Architecture** principles for maintainable, scalable code.
 
-## Overview
+## 🏗️ Architecture
 
-A comprehensive dashboard built with modern web technologies for monitoring transaction data, fraud detection, and real-time analytics.
-
-## Architecture
-
-This dashboard follows **Clean Architecture** principles:
+This project follows **Clean Architecture** principles with clear separation of concerns:
 
 ```
 src/
 ├── domain/              # Business Logic Layer
-│   ├── entities/        # Domain Models
+│   ├── entities/        # Domain Entities & Types
 │   └── services/        # Domain Services
 ├── application/         # Application Layer
-│   ├── use-cases/       # Application Logic
+│   ├── use-cases/       # Application Use Cases
 │   └── services/        # Application Services
 ├── infrastructure/      # Infrastructure Layer
-│   ├── api/            # External API Clients
-│   └── websocket/      # Real-time Connections
+│   ├── api/            # External API Services
+│   └── websocket/      # Real-time Communication
 └── presentation/        # Presentation Layer
     ├── components/     # React Components
     ├── pages/          # Page Components
-    ├── hooks/          # Custom Hooks
-    └── lib/            # Utilities
+    ├── hooks/          # Custom React Hooks
+    └── lib/            # Utilities & Helpers
 ```
 
-## Features
+## 🚀 Features
 
 ### Real-Time Monitoring
-- **Live KPI Cards**: Transaction counts, fraud rates, amounts
-- **Time Series Charts**: Transaction volume over time
-- **Geographic Maps**: Fraud hotspots by country
-- **Payment Analytics**: Method-wise transaction analysis
+- **Live KPI Metrics** - Transaction counts, fraud rates, amounts
+- **Time Series Charts** - Transaction volume over time
+- **Geographic Distribution** - Fraud hotspots by country
+- **Payment Method Analysis** - Risk assessment by payment type
 
 ### Fraud Detection
-- **Real-Time Alerts**: Instant fraud notifications
-- **Risk Classification**: Low/Medium/High severity alerts
-- **Transaction Feed**: Live transaction monitoring
+- **Real-Time Alerts** - Instant fraud notifications
+- **Severity Classification** - Low/Medium/High risk alerts
+- **Transaction Feed** - Live transaction monitoring
 
 ### Modern UI/UX
-- **Responsive Design**: Works on all devices
-- **Dark/Light Themes**: System preference support
-- **Smooth Animations**: Loading states and transitions
-- **Accessible**: WCAG compliant components
+- **Responsive Design** - Works on desktop, tablet, mobile
+- **Dark/Light Mode** - System preference detection
+- **Smooth Animations** - Loading states and transitions
+- **Accessible Components** - Built with Radix UI primitives
 
-## Technology Stack
+### Technical Features
+- **Server-Sent Events** - True real-time data streaming
+- **TypeScript** - Full type safety
+- **Clean Architecture** - Maintainable, testable code
+- **Error Handling** - Graceful failure recovery
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **UI Library**: Shadcn/ui + Radix UI
-- **Charts**: Recharts
-- **Styling**: Tailwind CSS
-- **Real-time**: Server-Sent Events
-- **State**: React Hooks + Context
+## 🛠️ Tech Stack
 
-## Quick Start
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** Radix UI + Shadcn/ui
+- **Charts:** Recharts
+- **Real-time:** Server-Sent Events
+- **Backend:** Node.js + Express (for SSE)
+- **Database:** Apache Pinot (via REST API)
+
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Running API server (port 3000)
+- Node.js 18+ and npm
+- Running Apache Pinot instance
+- Running Node.js server (for SSE)
 
-### Installation
+### Setup
 ```bash
-cd dashboard
+# Install dependencies
 npm install
-```
 
-### Development
-```bash
+# Start development server
 npm run dev
+
+# Open http://localhost:3000
 ```
-Open [http://localhost:3000](http://localhost:3000)
 
 ### Production Build
 ```bash
+# Build for production
 npm run build
+
+# Start production server
 npm start
 ```
 
-## Configuration
+## 🔧 Configuration
 
 ### Environment Variables
+Create a `.env.local` file:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_UPDATE_INTERVAL=2000
 ```
 
-## Components
-
-### Core Components
-- `KpiCard`: KPI metrics with change indicators
-- `TimeSeriesChart`: Transaction volume visualization
-- `GeographicChart`: Country-wise distribution
-- `PaymentMethodChart`: Payment method analysis
-- `FraudAlerts`: Real-time fraud notifications
-- `TransactionsTable`: Transaction data table
-
-### UI Components
-- `Card`: Content containers
-- `Badge`: Status indicators
-- `Button`: Interactive elements
-- `Charts`: Data visualization
-
-## Real-Time Features
-
-### Server-Sent Events
-- Persistent connection to API server
-- Instant updates when data changes
-- Automatic reconnection on failures
-- Connection status monitoring
-
-### Live Updates
-- KPI metrics update every 2 seconds
-- Charts refresh with new data
-- Fraud alerts appear immediately
-- Transaction feed streams live
-
-## Development
-
-### Adding New Features
-1. **Domain Layer**: Define business logic
-2. **Application Layer**: Create use cases
-3. **Infrastructure Layer**: Implement external services
-4. **Presentation Layer**: Build React components
-
-### Component Structure
-```
-ComponentName/
-├── index.tsx          # Main component
-├── types.ts          # TypeScript definitions
-├── hooks.ts          # Custom hooks
-├── utils.ts          # Helper functions
-└── styles.ts         # Component styles
+Or copy from the example file:
+```bash
+cp env.example .env.local
 ```
 
-### State Management
-- Use React hooks for local state
-- Context API for global state
-- Custom hooks for reusable logic
+### Backend Server
+The dashboard connects to a Node.js server that provides Server-Sent Events:
 
-## Testing
+```bash
+# Start the backend server (from visualization/ directory)
+npm start
+```
+
+## 🔄 Real-Time Updates
+
+The dashboard uses **Server-Sent Events (SSE)** for real-time updates:
+
+1. **Client** establishes SSE connection to server
+2. **Server** queries Pinot every 2 seconds
+3. **Server** broadcasts updates to all connected clients
+4. **Client** receives updates instantly without polling
+
+## 🧪 Testing
 
 ```bash
 # Run tests
@@ -156,55 +132,42 @@ npm run lint
 npm run type-check
 ```
 
-## Deployment
+## 🚀 Deployment
 
 ### Vercel (Recommended)
 ```bash
+# Install Vercel CLI
 npm i -g vercel
+
+# Deploy
 vercel
 ```
 
 ### Docker
-```dockerfile
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+```bash
+# Build Docker image
+docker build -t transaction-dashboard .
 
-FROM node:18-alpine AS runner
-WORKDIR /app
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-RUN npm ci --only=production
-EXPOSE 3000
-CMD ["npm", "start"]
+# Run container
+docker run -p 3000:3000 transaction-dashboard
 ```
 
-## Performance
+## 📝 Development
 
-### Optimizations
-- Code splitting with Next.js
-- Image optimization
-- Bundle analysis
-- Lazy loading components
+### Adding New Features
+1. **Domain Layer** - Define entities and business rules
+2. **Application Layer** - Create use cases
+3. **Infrastructure Layer** - Implement external services
+4. **Presentation Layer** - Build React components
 
-### Monitoring
-- Real-time connection status
-- Error boundaries
-- Performance metrics
-- User analytics
+### Component Structure
+```
+Component/
+├── index.tsx          # Main component
+├── types.ts          # TypeScript types
+├── hooks.ts          # Custom hooks
+├── utils.ts          # Helper functions
+└── styles.ts         # Component styles
+```
 
-## Contributing
-
-1. Follow Clean Architecture principles
-2. Use TypeScript for type safety
-3. Write comprehensive tests
-4. Follow component structure guidelines
-5. Update documentation
-
-## License
-
-MIT License
+---
