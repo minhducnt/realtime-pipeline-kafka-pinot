@@ -24,15 +24,38 @@ export const PaymentMethodChart: React.FC<PaymentMethodChartProps> = ({
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-800 mb-2">{label}</p>
-          <p className="text-sm text-blue-600">
+        <div style={{
+          backgroundColor: 'var(--surface)',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-lg)',
+          boxShadow: 'var(--shadow-lg)'
+        }}>
+          <p style={{
+            fontWeight: '600',
+            marginBottom: 'var(--space-sm)',
+            color: 'var(--text-primary)'
+          }}>{label}</p>
+          <p style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--chart-primary)',
+            margin: 'var(--space-xs) 0'
+          }}>
             Transactions: {formatNumber(data.transactionCount)}
           </p>
-          <p className="text-sm text-red-600">
+          <p style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--chart-error)',
+            margin: 'var(--space-xs) 0'
+          }}>
             Fraud Rate: {data.fraudRate.toFixed(1)}%
           </p>
-          <p className="text-sm text-green-600">
+          <p style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--chart-success)',
+            margin: 'var(--space-xs) 0'
+          }}>
             Total Amount: {formatCurrency(data.totalAmount)}
           </p>
         </div>
@@ -42,9 +65,9 @@ export const PaymentMethodChart: React.FC<PaymentMethodChartProps> = ({
   }
 
   const getBarColor = (fraudRate: number) => {
-    if (fraudRate >= 10) return '#ef4444' // red for high fraud
-    if (fraudRate >= 5) return '#f59e0b'  // yellow for medium fraud
-    return '#10b981' // green for low fraud
+    if (fraudRate >= 10) return 'var(--chart-error)' // red for high fraud
+    if (fraudRate >= 5) return 'var(--chart-warning)'  // yellow for medium fraud
+    return 'var(--chart-success)' // green for low fraud
   }
 
   const chartData = data.map(item => ({
@@ -64,17 +87,19 @@ export const PaymentMethodChart: React.FC<PaymentMethodChartProps> = ({
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" opacity={0.3} />
           <XAxis
             dataKey="method"
             className="text-xs"
             angle={-45}
             textAnchor="end"
             height={80}
+            stroke="var(--chart-text)"
           />
           <YAxis
             className="text-xs"
-            label={{ value: 'Transaction Count', angle: -90, position: 'insideLeft' }}
+            label={{ value: 'Transaction Count', angle: -90, position: 'insideLeft', fill: 'var(--chart-text)' }}
+            stroke="var(--chart-text)"
           />
           <Tooltip content={<CustomTooltip />} />
           <Bar

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge } from './ui/badge'
+import { Badge } from '../atoms/badge'
 import { Wifi, WifiOff, Loader2 } from 'lucide-react'
 
 interface ConnectionStatusProps {

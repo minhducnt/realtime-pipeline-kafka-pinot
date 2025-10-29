@@ -33,12 +33,27 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-800">
+        <div style={{
+          backgroundColor: 'var(--surface)',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-lg)',
+          boxShadow: 'var(--shadow-lg)'
+        }}>
+          <p style={{
+            fontWeight: '600',
+            marginBottom: 'var(--space-sm)',
+            color: 'var(--text-primary)'
+          }}>
             {formatTooltipTime(label)}
           </p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
+            <p key={index} style={{
+              color: entry.color,
+              fontSize: 'var(--font-size-sm)',
+              margin: 'var(--space-xs) 0'
+            }}>
               {entry.name}: {
                 entry.dataKey === 'fraudRate'
                   ? `${entry.value.toFixed(1)}%`
@@ -64,22 +79,25 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" opacity={0.3} />
           <XAxis
             dataKey="timestamp"
             tickFormatter={formatTime}
             className="text-xs"
+            stroke="var(--chart-text)"
           />
           <YAxis
             yAxisId="left"
             className="text-xs"
-            label={{ value: 'Transaction Count', angle: -90, position: 'insideLeft' }}
+            label={{ value: 'Transaction Count', angle: -90, position: 'insideLeft', fill: 'var(--chart-text)' }}
+            stroke="var(--chart-text)"
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             className="text-xs"
-            label={{ value: 'Fraud Rate (%)', angle: 90, position: 'insideRight' }}
+            label={{ value: 'Fraud Rate (%)', angle: 90, position: 'insideRight', fill: 'var(--chart-text)' }}
+            stroke="var(--chart-text)"
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
@@ -87,9 +105,9 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             yAxisId="left"
             type="monotone"
             dataKey="transactionCount"
-            stroke="#3b82f6"
+            stroke="var(--chart-primary)"
             strokeWidth={2}
-            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+            dot={{ fill: 'var(--chart-primary)', strokeWidth: 2, r: 4 }}
             activeDot={{ r: 6 }}
             name="Transaction Count"
           />
@@ -97,9 +115,9 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             yAxisId="right"
             type="monotone"
             dataKey="fraudRate"
-            stroke="#ef4444"
+            stroke="var(--chart-error)"
             strokeWidth={2}
-            dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }}
+            dot={{ fill: 'var(--chart-error)', strokeWidth: 2, r: 4 }}
             activeDot={{ r: 6 }}
             name="Fraud Rate (%)"
           />

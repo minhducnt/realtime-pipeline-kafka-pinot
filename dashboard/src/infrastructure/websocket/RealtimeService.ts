@@ -29,46 +29,9 @@ export class ServerSentEventsService implements RealtimeService {
       this.disconnect()
     }
 
-    try {
-      this.eventSource = new EventSource(`${this.baseUrl}/api/realtime`)
-
-      this.eventSource.onopen = () => {
-        console.log('Real-time connection established')
-        this.reconnectAttempts = 0
-        this.connectionCallback?.(true)
-      }
-
-      this.eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data)
-          this.dataCallback?.(data.metrics)
-        } catch (error) {
-          console.error('Failed to parse real-time data:', error)
-          this.errorCallback?.(new Error('Failed to parse real-time data'))
-        }
-      }
-
-      this.eventSource.onerror = (event) => {
-        console.error('Real-time connection error:', event)
-        this.connectionCallback?.(false)
-
-        // Attempt to reconnect
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
-          this.reconnectAttempts++
-          console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`)
-
-          this.reconnectTimeout = setTimeout(() => {
-            this.connect()
-          }, this.reconnectDelay)
-        } else {
-          this.errorCallback?.(new Error('Failed to reconnect after maximum attempts'))
-        }
-      }
-
-    } catch (error) {
-      this.errorCallback?.(error as Error)
-      throw error
-    }
+    // Remote Pinot instance doesn't have real-time endpoints
+    console.log('Real-time updates not available - no streaming endpoints on remote Pinot')
+    this.connectionCallback?.(false)
   }
 
   disconnect(): void {
@@ -98,6 +61,7 @@ export class ServerSentEventsService implements RealtimeService {
   }
 
   isConnected(): boolean {
-    return this.eventSource?.readyState === EventSource.OPEN
+    // Remote Pinot instance doesn't have real-time endpoints
+    return false
   }
 }

@@ -47,17 +47,23 @@ async function getRealTimeMetrics() {
             FROM transactions
             WHERE create_dt >= ago('PT1H')
         `,
-        recentActivity: `
+        recentTransactions: `
             SELECT
-                create_dt,
+                transaction_seq,
                 user_seq,
+                create_dt,
                 deposit_amount,
                 receiving_country,
+                country_code,
                 payment_method,
-                label
+                label,
+                transaction_count_24hour,
+                transaction_amount_24hour,
+                transaction_count_1week,
+                transaction_amount_1week
             FROM transactions
             ORDER BY create_dt DESC
-            LIMIT 10
+            LIMIT 20
         `,
         timeSeries: `
             SELECT
@@ -114,7 +120,26 @@ async function getRealTimeMetrics() {
     for (const [key, sql] of Object.entries(queries)) {
         const data = await queryPinot(sql);
         if (data && data.resultTable) {
-            results[key] = data.resultTable.rows;
+            if (key === 'recentTransactions') {
+                // Transform recentTransactions to match Transaction interface
+                results[key] = data.resultTable.rows.map((row, index) => ({
+                    id: `txn-${index}`,
+                    transactionSeq: Number(row[0]) || 0,
+                    userSeq: Number(row[1]) || 0,
+                    createDt: row[2],
+                    depositAmount: Number(row[3]) || 0,
+                    receivingCountry: row[4] || 'Unknown',
+                    countryCode: row[5] || 'XX',
+                    paymentMethod: row[6] || 'Unknown',
+                    label: Number(row[7]) || 0,
+                    transactionCount24Hour: Number(row[8]) || 0,
+                    transactionAmount24Hour: Number(row[9]) || 0,
+                    transactionCount1Week: Number(row[10]) || 0,
+                    transactionAmount1Week: Number(row[11]) || 0
+                }));
+            } else {
+                results[key] = data.resultTable.rows;
+            }
         } else {
             results[key] = [];
         }
@@ -124,7 +149,7 @@ async function getRealTimeMetrics() {
 }
 
 // Server-Sent Events endpoint for real-time updates
-app.get('/api/realtime', (req, res) => {
+app.get('/#/', (req, res) => {
     // Set headers for SSE
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
@@ -148,7 +173,7 @@ app.get('/api/realtime', (req, res) => {
 });
 
 // REST API endpoint for manual queries
-app.post('/api/query', async (req, res) => {
+app.post('/#/query', async (req, res) => {
     try {
         const { sql } = req.body;
         if (!sql) {
@@ -197,7 +222,7 @@ app.get('/', (req, res) => {
         status: 'running',
         endpoints: {
             realtime: '/api/realtime',
-            query: 'POST /api/query',
+            query: 'POST /#/query',
             health: '/api/health'
         }
     });

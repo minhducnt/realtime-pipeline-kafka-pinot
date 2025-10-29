@@ -38,7 +38,7 @@ Returns Server-Sent Events stream with live dashboard data.
 
 ### Data Queries
 ```
-POST /api/query
+POST /#/query
 ```
 
 Execute custom SQL queries against Pinot.

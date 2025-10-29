@@ -1,6 +1,6 @@
 import { TransactionService } from '../../domain/services/TransactionService'
 import { RealtimeService } from '../../infrastructure/websocket/RealtimeService'
-import { GetDashboardDataUseCase } from '../use-cases/GetDashboardData'
+import { GetDashboardDataUseCaseImpl } from '../use-cases/GetDashboardData'
 import { DashboardData } from '../../domain/entities/Transaction'
 
 export interface DashboardApplicationService {
@@ -21,7 +21,7 @@ export class DashboardApplicationServiceImpl implements DashboardApplicationServ
   ) {}
 
   async getDashboardData(): Promise<DashboardData> {
-    const useCase = new GetDashboardDataUseCase(this.transactionService)
+    const useCase = new GetDashboardDataUseCaseImpl(this.transactionService)
     return await useCase.execute()
   }
 
